@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using ProEventos.API.Data;
 using ProEventos.API.Models;
 
 namespace ProEventos.API.Controllers
@@ -13,49 +10,23 @@ namespace ProEventos.API.Controllers
     [Route("api/[controller]")]
     public class EventoController : ControllerBase
     {
-        private readonly ILogger<EventoController> _logger;
+        private readonly DataContext _context;
 
-        public EventoController(ILogger<EventoController> logger)
+        public EventoController(DataContext context)
         {
-            
+            _context = context;
         }
-
-        private IEnumerable<Evento> _evento = new Evento[] 
-        {
-            new Evento()
-            {
-               EventoId = 1,
-               Local = "São Paulo",
-               DataEvento = DateTime.Now.AddDays(2),
-               Tema = "Rock",
-               Lote = "Lote1",
-               QtdPessoas = 250,
-               ImagemUrl = "Foto.png"
-            },
-            new Evento()
-            {
-               EventoId = 2,
-               Local = "Rio de Janeiro",
-               DataEvento = DateTime.Now.AddDays(3),
-               Tema = "Pagode",
-               Lote = "Lote2",
-               QtdPessoas = 350,
-               ImagemUrl = "Foto1.png"
-            }
-
-        };
-        
 
         [HttpGet]
         public IEnumerable<Evento> Get()
         {
-            return _evento;
+            return _context.Eventos;
         }
 
          [HttpGet("{id}")]
-        public IEnumerable<Evento> GetById(int id)
+        public Evento GetById(int id)
         {
-            return _evento.Where(evento => evento.EventoId == id);
+            return _context.Eventos.FirstOrDefault(evento => evento.EventoId == id);
         }
 
         [HttpPost]
